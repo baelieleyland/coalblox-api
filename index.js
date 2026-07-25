@@ -3,11 +3,12 @@ const cors = require("cors");
 
 const app = express();
 
-app.use(cors({
-    origin: "*",
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type"]
-}));
+const corsOptions = {
+    origin: "https://baelieleyland.github.io",
+    credentials: true
+};
+
+app.use(cors(corsOptions));
 
 app.options("/{*any}", cors());
 
