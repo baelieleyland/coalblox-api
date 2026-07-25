@@ -20,12 +20,14 @@ app.get("/", (req, res) => {
 
 // Signup
 app.post("/signup/v1", (req, res) => {
-    console.log("Signup:", req.body);
+    console.log("Signup request:", req.body);
+
+    const username = req.body?.username || "Guest";
 
     res.json({
         success: true,
         userId: 1,
-        username: req.body.username || "Guest",
+        username: username,
         message: "Account created!"
     });
 });
