@@ -9,14 +9,49 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 app.options("/{*any}", cors());
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
     res.send("CoalBlox API is running!");
 });
+
+
+// Temporary users (replace with database later)
+const users = [
+    {
+        id: 1,
+        username: "testaccount1",
+        password: "TEST1234"
+    }
+];
+
+
+// Login
+app.post("/login/v1", (req, res) => {
+    console.log("Login request:", req.body);
+
+    const { username, password } = req.body;
+
+    const user = users.find(
+        u =>
+            u.username.toLowerCase() === String(username).toLowerCase() &&
+            u.password === password
+    );
+
+    if (!user) {
+        return res.status(401).send("Incorrect username or password.");
+    }
+
+    console.log("Logged in:", user.username);
+
+    res.redirect(
+        "https://baelieleyland.github.io/coalblox-web/games?nu=true"
+    );
+});
+
 
 // Signup
 app.post("/signup/v1", (req, res) => {
@@ -31,6 +66,7 @@ app.post("/signup/v1", (req, res) => {
         message: "Account created!"
     });
 });
+
 
 // Captcha
 app.post("/captcha/validate/signup", (req, res) => {
@@ -47,6 +83,7 @@ app.post("/captcha/validate/login", (req, res) => {
     });
 });
 
+
 // Username checker
 app.get("/UserCheck/checkifinvalidusernameforsignup", (req, res) => {
     const username = req.query.username;
@@ -62,7 +99,8 @@ app.get("/UserCheck/checkifinvalidusernameforsignup", (req, res) => {
     });
 });
 
-// Catch missing routes
+
+// Catch missing routes (MUST BE LAST)
 app.use((req, res) => {
     console.log("404:", req.method, req.url);
 
@@ -72,38 +110,6 @@ app.use((req, res) => {
     });
 });
 
-// Temporary users (replace with a database later)
-const users = [
-    {
-        id: 1,
-        username: "testaccount1",
-        password: "TEST1234"
-    }
-];
-
-app.post("/login/v1", (req, res) => {
-    const { username, password } = req.body;
-
-    const user = users.find(
-        u => u.username === username && u.password === password
-    );
-
-    if (!user) {
-        return res.status(401).json({
-            success: false,
-            message: "Incorrect username or password."
-        });
-    }
-
-    res.json({
-        success: true,
-        user: {
-            id: user.id,
-            username: user.username
-        },
-        message: "Login successful!"
-    });
-});
 
 const port = process.env.PORT || 3000;
 
