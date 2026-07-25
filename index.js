@@ -15,10 +15,28 @@ app.post("/signup/v1", (req, res) => {
 
     res.json({
         success: true,
+        userId: 1,
+        username: req.body.username || "Guest",
         message: "Account created!"
     });
 });
 
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
+app.post("/captcha/validate/signup", (req, res) => {
+    res.json({
+        success: true,
+        message: "Captcha passed"
+    });
+});
+
+app.post("/captcha/validate/login", (req, res) => {
+    res.json({
+        success: true,
+        message: "Captcha passed"
+    });
+});
+
+const port = process.env.PORT || 3000;
+
+app.listen(port, "0.0.0.0", () => {
+    console.log(`Server running on port ${port}`);
 });
